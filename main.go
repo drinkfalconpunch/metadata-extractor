@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math"
-	"flag"
+	"log"
 	"os"
-	"io/ioutil"
 )
 
 func main() {
@@ -16,9 +14,20 @@ func main() {
 	filename := os.Args[1]
 	imageFile, err := os.Open(filename)
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
+	}
+	defer imageFile.Close()
+
+	fmt.Println(chunkBytes(imageFile, 10))
+}
+
+func chunkBytes(file *os.File, chunkSize int) []byte {
+	bytes := make([]byte, chunkSize)
+
+	_, err := file.Read(bytes)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-
+	return bytes
 }
